@@ -8,180 +8,137 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #1abc9c;
-            --light-color: #ecf0f1;
-            --danger-color: #e74c3c;
-            --success-color: #2ecc71;
+            --primary: #2c3e50;
+            --accent: #1abc9c;
+            --danger: #e74c3c;
         }
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
             color: #333;
         }
         .navbar {
-            background-color: var(--primary-color) !important;
+            background-color: var(--primary) !important;
         }
         .navbar-brand, .nav-link {
             color: white !important;
         }
         .btn-primary {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-        .btn-danger {
-            background-color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-        .btn-success {
-            background-color: var(--success-color);
-            border-color: var(--success-color);
+            background-color: var(--accent);
+            border-color: var(--accent);
         }
         .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            border: none;
         }
         .card-header {
-            background-color: var(--primary-color);
+            background-color: var(--primary);
             color: white;
-            border-top-left-radius: 15px !important;
-            border-top-right-radius: 15px !important;
+            border-top-left-radius: 12px !important;
+            border-top-right-radius: 12px !important;
             font-weight: bold;
         }
         .footer {
-            background-color: var(--primary-color);
-            color: white;
             text-align: center;
             padding: 20px 0;
             margin-top: 50px;
+            background-color: var(--primary);
+            color: white;
         }
-        .appointment-card {
-            transition: transform 0.2s;
-        }
-        .appointment-card:hover {
-            transform: translateY(-5px);
-        }
-        .admin-panel {
-            display: none;
-        }
+        .admin-panel { display: none; }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-    <img src="logo.png" alt="Logo Fusion Cuerpo Mente" width="40" height="40" class="me-2 rounded">
-    <span>Fusion Cuerpo Mente</span>
-</a>
+                <svg width="30" height="30" viewBox="0 0 64 64" class="me-2">
+                    <circle cx="32" cy="32" r="30" fill="#1abc9c"/>
+                    <path d="M32 18c-2 0-4 1-5 3l-6 8v10h18v-10l-6-8c-1-2-3-3-5-3z" fill="white"/>
+                    <circle cx="26" cy="26" r="3" fill="white"/>
+                    <circle cx="38" cy="26" r="3" fill="white"/>
+                </svg>
+                <span>Fusion Cuerpo Mente</span>
+            </a>
             <div class="navbar-nav ms-auto" id="auth-nav">
                 <button class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Iniciar Sesión</button>
                 <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">Registrarse</button>
             </div>
             <div class="navbar-nav ms-auto" id="user-nav" style="display: none;">
-                <span class="nav-link text-white" id="welcome-user">Bienvenido, <strong id="username-display"></strong></span>
-                <button class="btn btn-outline-light ms-2" id="logout-btn">Cerrar Sesión</button>
+                <span class="nav-link text-white">Hola, <strong id="username-display"></strong></span>
+                <button class="btn btn-outline-light ms-2" id="logout-btn">Cerrar sesión</button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container mt-5">
+    <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-10">
-                <!-- User Panel -->
-                <div id="user-panel">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-calendar-check"></i> Reserva tu Clase de Pilates
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h5><i class="fas fa-info-circle"></i> Información</h5>
-                                    <p>Bienvenido a Fusion Cuerpo Mente, tu estudio de pilates especializado en armonizar tu cuerpo y mente. Reserva tu clase y comienza tu camino hacia el bienestar.</p>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-exclamation-circle"></i> Los usuarios solo pueden registrarse, reservar y anular citas.
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5><i class="fas fa-calendar-plus"></i> Nueva Reserva</h5>
-                                    <form id="appointment-form">
-                                        <div class="mb-3">
-                                            <label for="appointment-date" class="form-label">Fecha</label>
-                                            <input type="date" class="form-control" id="appointment-date" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="appointment-time" class="form-label">Hora</label>
-                                            <select class="form-select" id="appointment-time" required>
-                                                <option value="">Selecciona una hora</option>
-                                                <option value="08:00">08:00 AM</option>
-                                                <option value="09:00">09:00 AM</option>
-                                                <option value="10:00">10:00 AM</option>
-                                                <option value="11:00">11:00 AM</option>
-                                                <option value="16:00">04:00 PM</option>
-                                                <option value="17:00">05:00 PM</option>
-                                                <option value="18:00">06:00 PM</option>
-                                                <option value="19:00">07:00 PM</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="class-type" class="form-label">Tipo de Clase</label>
-                                            <select class="form-select" id="class-type" required>
-                                                <option value="Mat Pilates">Mat Pilates</option>
-                                                <option value="Reformer">Reformer</option>
-                                                <option value="Privada">Clase Privada</option>
-                                                <option value="Semi-privada">Semi-privada</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            <i class="fas fa-calendar-check"></i> Reservar Cita
-                                        </button>
-                                    </form>
-                                </div>
+                <div class="card">
+                    <div class="card-header">Reservar Clase</div>
+                    <div class="card-body">
+                        <form id="appointment-form">
+                            <div class="mb-3">
+                                <label>Fecha</label>
+                                <input type="date" class="form-control" id="appointment-date" required>
                             </div>
-                        </div>
+                            <div class="mb-3">
+                                <label>Hora</label>
+                                <select class="form-select" id="appointment-time" required>
+                                    <option value="">Selecciona...</option>
+                                    <option value="08:00">08:00</option>
+                                    <option value="09:00">09:00</option>
+                                    <option value="10:00">10:00</option>
+                                    <option value="11:00">11:00</option>
+                                    <option value="16:00">16:00</option>
+                                    <option value="17:00">17:00</option>
+                                    <option value="18:00">18:00</option>
+                                    <option value="19:00">19:00</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Tipo de Clase</label>
+                                <select class="form-select" id="class-type" required>
+                                    <option value="Mat Pilates">Mat Pilates</option>
+                                    <option value="Reformer">Reformer</option>
+                                    <option value="Privada">Clase Privada</option>
+                                    <option value="Semi-privada">Semi-privada</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Reservar</button>
+                        </form>
                     </div>
+                </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-calendar-alt"></i> Mis Citas
-                        </div>
-                        <div class="card-body">
-                            <div id="appointments-list">
-                                <p class="text-center text-muted">No tienes citas programadas.</p>
-                            </div>
+                <div class="card">
+                    <div class="card-header">Mis Citas</div>
+                    <div class="card-body">
+                        <div id="appointments-list">
+                            <p class="text-center text-muted">Inicia sesión para ver tus citas.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Admin Panel -->
-                <div id="admin-panel" class="admin-panel">
+                <div class="admin-panel" id="admin-panel">
                     <div class="card">
-                        <div class="card-header">
-                            <i class="fas fa-user-shield"></i> Panel de Administración
-                        </div>
+                        <div class="card-header">Panel del Administrador</div>
                         <div class="card-body">
-                            <h5><i class="fas fa-calendar-week"></i> Citas en Tiempo Real</h5>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Usuario</th>
-                                            <th>Fecha</th>
-                                            <th>Hora</th>
-                                            <th>Clase</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="admin-appointments-list">
-                                        <!-- Appointments will be loaded here -->
-                                    </tbody>
-                                </table>
-                            </div>
+                            <h5>Todas las Citas</h5>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Fecha</th>
+                                        <th>Hora</th>
+                                        <th>Clase</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-appointments-list">
+                                    <tr><td colspan="5" class="text-center text-muted">Cargando...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -190,28 +147,28 @@
     </div>
 
     <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="loginModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Iniciar Sesión</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="login-form">
                         <div class="mb-3">
-                            <label for="login-email" class="form-label">Correo Electrónico</label>
+                            <label>Correo</label>
                             <input type="email" class="form-control" id="login-email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="login-password" class="form-label">Contraseña</label>
+                            <label>Contraseña</label>
                             <input type="password" class="form-control" id="login-password" required>
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="admin-login">
-                            <label class="form-check-label" for="admin-login">Iniciar sesión como administrador</label>
+                            <label class="form-check-label">¿Eres administrador?</label>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+                        <button type="submit" class="btn btn-primary w-100">Entrar</button>
                     </form>
                 </div>
             </div>
@@ -219,33 +176,29 @@
     </div>
 
     <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="registerModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Registrarse</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="register-form">
                         <div class="mb-3">
-                            <label for="register-name" class="form-label">Nombre Completo</label>
+                            <label>Nombre</label>
                             <input type="text" class="form-control" id="register-name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="register-email" class="form-label">Correo Electrónico</label>
+                            <label>Correo</label>
                             <input type="email" class="form-control" id="register-email" required>
                         </div>
                         <div class="mb-3">
-                            <label for="register-phone" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="register-phone">
+                            <label>Contraseña</label>
+                            <input type="password" class="form-control" id="register-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
                         </div>
                         <div class="mb-3">
-                            <label for="register-password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="register-password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="register-confirm-password" class="form-label">Confirmar Contraseña</label>
+                            <label>Confirmar Contraseña</label>
                             <input type="password" class="form-control" id="register-confirm-password" required>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Registrarse</button>
@@ -255,343 +208,244 @@
         </div>
     </div>
 
-    <!-- Cancel Appointment Modal -->
-    <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+    <!-- Cancel Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Anular Cita</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>¿Estás seguro de que deseas anular esta cita programada para <strong id="cancel-appointment-info"></strong>?</p>
+                    <p>¿Confirmas que deseas anular esta cita programada para <strong id="cancel-info"></strong>?</p>
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle"></i> Esta acción no se puede deshacer.
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirm-cancel-btn">Anular Cita</button>
+                    <button type="button" class="btn btn-danger" id="confirm-cancel">Anular</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2023 Fusion Cuerpo Mente. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Fusion Cuerpo Mente. Todos los derechos reservados.</p>
             <p>Armonizando tu cuerpo y mente a través del Pilates</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Data storage
         let users = JSON.parse(localStorage.getItem('pilatesUsers')) || [
-            { id: 1, name: 'Admin', email: 'admin@fusión.com', password: 'admin123', isAdmin: true }
+            { id: 'admin', name: 'Administrador', email: 'admin@fusion.com', password: 'admin123', isAdmin: true }
         ];
-        
         let appointments = JSON.parse(localStorage.getItem('pilatesAppointments')) || [];
-        let currentUser = null;
-        let appointmentToCancel = null;
+        let currentUser = JSON.parse(localStorage.getItem('pilatesCurrentUser')) || null;
 
-        // DOM Elements
         const authNav = document.getElementById('auth-nav');
         const userNav = document.getElementById('user-nav');
         const usernameDisplay = document.getElementById('username-display');
-        const userPanel = document.getElementById('user-panel');
-        const adminPanel = document.getElementById('admin-panel');
         const appointmentsList = document.getElementById('appointments-list');
         const adminAppointmentsList = document.getElementById('admin-appointments-list');
-        const appointmentForm = document.getElementById('appointment-form');
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
-        const cancelAppointmentInfo = document.getElementById('cancel-appointment-info');
-        const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+        const appointmentForm = document.getElementById('appointment-form');
         const logoutBtn = document.getElementById('logout-btn');
+        const confirmCancel = document.getElementById('confirm-cancel');
 
-        // Initialize the app
-        function init() {
-            checkAuth();
-            renderAppointments();
-            setupEventListeners();
-        }
+        let appointmentToCancel = null;
 
-        // Check authentication status
-        function checkAuth() {
-            const savedUser = localStorage.getItem('pilatesCurrentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUIForAuth();
-            }
-        }
-
-        // Update UI based on authentication
-        function updateUIForAuth() {
+        function updateUI() {
             if (currentUser) {
                 authNav.style.display = 'none';
                 userNav.style.display = 'flex';
                 usernameDisplay.textContent = currentUser.name;
-                
                 if (currentUser.isAdmin) {
-                    adminPanel.style.display = 'block';
+                    document.getElementById('admin-panel').style.display = 'block';
+                    renderAdminAppointments();
                 } else {
-                    adminPanel.style.display = 'none';
+                    document.getElementById('admin-panel').style.display = 'none';
                 }
             } else {
                 authNav.style.display = 'flex';
                 userNav.style.display = 'none';
-                adminPanel.style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'none';
             }
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Login form
-            loginForm.addEventListener('submit', function(e) {
+        function setupListeners() {
+            registerForm.addEventListener('submit', e => {
+                e.preventDefault();
+                const name = document.getElementById('register-name').value;
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                const confirm = document.getElementById('register-confirm-password').value;
+
+                if (password !== confirm) return alert('Las contraseñas no coinciden');
+                if (users.some(u => u.email === email)) return alert('Este correo ya está registrado');
+
+                const user = { id: Date.now(), name, email, password, isAdmin: false };
+                users.push(user);
+                localStorage.setItem('pilatesUsers', JSON.stringify(users));
+                alert('✅ Registro exitoso');
+                registerForm.reset();
+                bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();
+            });
+
+            loginForm.addEventListener('submit', e => {
                 e.preventDefault();
                 const email = document.getElementById('login-email').value;
                 const password = document.getElementById('login-password').value;
                 const isAdmin = document.getElementById('admin-login').checked;
-                
-                const user = users.find(u => 
-                    u.email === email && 
-                    u.password === password && 
-                    u.isAdmin === isAdmin
-                );
-                
+
+                const user = users.find(u => u.email === email && u.password === password && u.isAdmin === isAdmin);
                 if (user) {
                     currentUser = user;
-                    localStorage.setItem('pilatesCurrentUser', JSON.stringify(user));
-                    updateUIForAuth();
+                    localStorage.setItem('pilatesCurrentUser', JSON.stringify(currentUser));
+                    updateUI();
+                    renderAppointments();
                     loginForm.reset();
-                    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                    loginModal.hide();
+                    bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
                 } else {
-                    alert('Credenciales inválidas. Por favor, verifica tus datos.');
+                    alert('Credenciales inválidas');
                 }
             });
 
-            // Register form
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const name = document.getElementById('register-name').value;
-                const email = document.getElementById('register-email').value;
-                const phone = document.getElementById('register-phone').value;
-                const password = document.getElementById('register-password').value;
-                const confirmPassword = document.getElementById('register-confirm-password').value;
-                
-                if (password !== confirmPassword) {
-                    alert('Las contraseñas no coinciden');
-                    return;
-                }
-                
-                if (users.some(u => u.email === email)) {
-                    alert('Ya existe un usuario con este correo electrónico');
-                    return;
-                }
-                
-                const newUser = {
-                    id: Date.now(),
-                    name,
-                    email,
-                    phone,
-                    password,
-                    isAdmin: false
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('pilatesUsers', JSON.stringify(users));
-                
-                alert('Registro exitoso. Ahora puedes iniciar sesión.');
-                registerForm.reset();
-                const registerModal = bootstrap.Modal.getInstance(document.getElementById('registerModal'));
-                registerModal.hide();
+            logoutBtn.addEventListener('click', () => {
+                currentUser = null;
+                localStorage.removeItem('pilatesCurrentUser');
+                updateUI();
+                renderAppointments();
             });
 
-            // Appointment form
-            appointmentForm.addEventListener('submit', function(e) {
+            appointmentForm.addEventListener('submit', e => {
                 e.preventDefault();
-                
-                if (!currentUser) {
-                    alert('Por favor, inicia sesión para reservar una cita');
-                    return;
-                }
-                
+                if (!currentUser || currentUser.isAdmin) return alert('Inicia sesión como usuario');
+
                 const date = document.getElementById('appointment-date').value;
                 const time = document.getElementById('appointment-time').value;
                 const classType = document.getElementById('class-type').value;
-                
-                // Check if appointment already exists
+
                 if (appointments.some(a => a.userId === currentUser.id && a.date === date && a.time === time)) {
-                    alert('Ya tienes una cita reservada para esta fecha y hora');
-                    return;
+                    return alert('Ya tienes una cita a esa hora');
                 }
-                
-                const newAppointment = {
+
+                const appt = {
                     id: Date.now(),
                     userId: currentUser.id,
                     userName: currentUser.name,
                     date,
                     time,
-                    classType,
-                    status: 'programada',
-                    createdAt: new Date().toISOString()
+                    classType
                 };
-                
-                appointments.push(newAppointment);
+                appointments.push(appt);
                 localStorage.setItem('pilatesAppointments', JSON.stringify(appointments));
-                
-                alert('Cita reservada con éxito');
+                alert('✅ Cita reservada');
                 appointmentForm.reset();
                 renderAppointments();
             });
-
-            // Logout
-            logoutBtn.addEventListener('click', function() {
-                currentUser = null;
-                localStorage.removeItem('pilatesCurrentUser');
-                updateUIForAuth();
-            });
-
-            // Confirm cancel appointment
-            confirmCancelBtn.addEventListener('click', function() {
-                if (appointmentToCancel) {
-                    appointments = appointments.filter(a => a.id !== appointmentToCancel);
-                    localStorage.setItem('pilatesAppointments', JSON.stringify(appointments));
-                    renderAppointments();
-                    
-                    const cancelModal = bootstrap.Modal.getInstance(document.getElementById('cancelModal'));
-                    cancelModal.hide();
-                }
-            });
         }
 
-        // Render appointments for user
         function renderAppointments() {
-            if (currentUser) {
-                const userAppointments = appointments
-                    .filter(a => a.userId === currentUser.id)
-                    .sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
-                
-                if (userAppointments.length > 0) {
-                    appointmentsList.innerHTML = '';
-                    userAppointments.forEach(appt => {
-                        const apptDate = new Date(appt.date);
-                        const formattedDate = apptDate.toLocaleDateString('es-ES', { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        });
-                        
-                        const card = document.createElement('div');
-                        card.className = 'appointment-card card mb-3';
-                        card.innerHTML = `
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="card-title">${appt.classType}</h6>
-                                        <p class="card-text">
-                                            <i class="far fa-calendar"></i> ${formattedDate} | 
-                                            <i class="far fa-clock"></i> ${appt.time}
-                                        </p>
-                                        <span class="badge bg-primary">${appt.status}</span>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-danger cancel-appointment" data-id="${appt.id}">
-                                        <i class="fas fa-times"></i> Anular
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        appointmentsList.appendChild(card);
-                    });
-                    
-                    // Add event listeners to cancel buttons
-                    document.querySelectorAll('.cancel-appointment').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            const apptId = parseInt(this.getAttribute('data-id'));
-                            const appt = appointments.find(a => a.id === apptId);
-                            
-                            if (appt) {
-                                const apptDate = new Date(appt.date);
-                                const formattedDate = apptDate.toLocaleDateString('es-ES', { 
-                                    weekday: 'long', 
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric' 
-                                });
-                                cancelAppointmentInfo.textContent = `${formattedDate} a las ${appt.time}`;
-                                appointmentToCancel = apptId;
-                                
-                                const cancelModal = new bootstrap.Modal(document.getElementById('cancelModal'));
-                                cancelModal.show();
-                            }
-                        });
-                    });
-                } else {
-                    appointmentsList.innerHTML = '<p class="text-center text-muted">No tienes citas programadas.</p>';
-                }
-            } else {
+            if (!currentUser) {
                 appointmentsList.innerHTML = '<p class="text-center text-muted">Inicia sesión para ver tus citas.</p>';
+                return;
             }
-            
-            // Render admin appointments
-            renderAdminAppointments();
+            if (currentUser.isAdmin) {
+                appointmentsList.innerHTML = '<p class="text-center text-muted">Panel de administrador activo.</p>';
+                return;
+            }
+
+            const userApps = appointments
+                .filter(a => a.userId === currentUser.id)
+                .sort((a, b) => new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time));
+
+            if (userApps.length === 0) {
+                appointmentsList.innerHTML = '<p class="text-center text-muted">No tienes citas programadas.</p>';
+                return;
+            }
+
+            appointmentsList.innerHTML = '';
+            userApps.forEach(a => {
+                const date = new Date(a.date).toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short' });
+                const card = document.createElement('div');
+                card.className = 'card mb-2';
+                card.innerHTML = `
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${a.classType}</strong><br>
+                                <small>${date} | ${a.time}</small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="openCancelModal(${a.id}, '${a.classType}', '${date}', '${a.time}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                appointmentsList.appendChild(card);
+            });
         }
 
-        // Render appointments for admin
         function renderAdminAppointments() {
-            if (currentUser && currentUser.isAdmin) {
-                adminAppointmentsList.innerHTML = '';
-                
-                const sortedAppointments = [...appointments].sort((a, b) => 
-                    new Date(b.createdAt) - new Date(a.createdAt)
-                );
-                
-                if (sortedAppointments.length > 0) {
-                    sortedAppointments.forEach(appt => {
-                        const apptDate = new Date(appt.date);
-                        const formattedDate = apptDate.toLocaleDateString('es-ES');
-                        
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${appt.userName}</td>
-                            <td>${formattedDate}</td>
-                            <td>${appt.time}</td>
-                            <td>${appt.classType}</td>
-                            <td><span class="badge bg-${appt.status === 'programada' ? 'success' : 'secondary'}">${appt.status}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger cancel-admin-appointment" data-id="${appt.id}">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        `;
-                        adminAppointmentsList.appendChild(row);
-                    });
-                    
-                    // Add event listeners to admin cancel buttons
-                    document.querySelectorAll('.cancel-admin-appointment').forEach(btn => {
-                        btn.addEventListener('click', function() {
-                            if (confirm('¿Estás seguro de que deseas eliminar esta cita?')) {
-                                const apptId = parseInt(this.getAttribute('data-id'));
-                                appointments = appointments.filter(a => a.id !== apptId);
-                                localStorage.setItem('pilatesAppointments', JSON.stringify(appointments));
-                                renderAppointments();
-                            }
-                        });
-                    });
-                } else {
-                    const row = document.createElement('tr');
-                    row.innerHTML = '<td colspan="6" class="text-center text-muted">No hay citas registradas</td>';
-                    adminAppointmentsList.appendChild(row);
-                }
+            if (!currentUser?.isAdmin) return;
+            adminAppointmentsList.innerHTML = '';
+
+            if (appointments.length === 0) {
+                adminAppointmentsList.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay citas</td></tr>';
+                return;
             }
+
+            [...appointments].sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(a => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${a.userName}</td>
+                    <td>${a.date}</td>
+                    <td>${a.time}</td>
+                    <td>${a.classType}</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="deleteAppointment(${a.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                adminAppointmentsList.appendChild(tr);
+            });
         }
 
-        // Initialize the app when the page loads
-        window.addEventListener('DOMContentLoaded', init);
+        window.openCancelModal = function(id, classType, date, time) {
+            document.getElementById('cancel-info').textContent = `${classType} - ${date} a las ${time}`;
+            appointmentToCancel = id;
+            new bootstrap.Modal(document.getElementById('cancelModal')).show();
+        };
+
+        confirmCancel.addEventListener('click', () => {
+            if (appointmentToCancel) {
+                appointments = appointments.filter(a => a.id !== appointmentToCancel);
+                localStorage.setItem('pilatesAppointments', JSON.stringify(appointments));
+                renderAppointments();
+                renderAdminAppointments();
+                new bootstrap.Modal(document.getElementById('cancelModal')).hide();
+            }
+        });
+
+        window.deleteAppointment = function(id) {
+            if (confirm('¿Eliminar esta cita?')) {
+                appointments = appointments.filter(a => a.id !== id);
+                localStorage.setItem('pilatesAppointments', JSON.stringify(appointments));
+                renderAppointments();
+                renderAdminAppointments();
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            renderAppointments();
+            setupListeners();
+        });
     </script>
 </body>
 </html>
